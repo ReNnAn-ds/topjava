@@ -31,20 +31,9 @@ public class UserMealsUtil {
     public static List<UserMealWithExcess> filteredByCycles(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         Map<LocalDate, Integer> caloriesPerDayOfMonth = new HashMap<>();
 
-        LocalDate currentDate = meals.get(0).getDateTime().toLocalDate();
-        int caloriesSumPerDay = 0;
         for (int a = 0; a < meals.size(); a++) {
             UserMeal userMeal = meals.get(a);
-            if (!userMeal.getDateTime().toLocalDate().equals(currentDate)) {
-                caloriesPerDayOfMonth.put(currentDate, caloriesSumPerDay);
-                currentDate = userMeal.getDateTime().toLocalDate();
-                caloriesSumPerDay = 0;
-            }
-            caloriesSumPerDay = caloriesSumPerDay + userMeal.getCalories();
-
-            if (a == meals.size() - 1){
-                caloriesPerDayOfMonth.put(currentDate, caloriesSumPerDay);
-            }
+            caloriesPerDayOfMonth.merge(userMeal.getDateTime().toLocalDate(), userMeal.getCalories(), (oldValue, newValue) -> oldValue + newValue);
         }
 
         List<UserMealWithExcess> filteredUserMealsWithExcess = new ArrayList<>();
