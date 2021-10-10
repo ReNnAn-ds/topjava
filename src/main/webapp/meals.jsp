@@ -22,6 +22,7 @@
         <th>Date/Time</th>
         <th>Description</th>
         <th>Calories</th>
+        <th colspan="2">Action</th>
     </tr>
     <%--@elvariable id="mealsList" type="java.util.List"--%>
     <c:forEach var="meal" items="${mealsList}">
@@ -35,9 +36,16 @@
             <td>
                 <c:out value="${meal.calories}"/>
             </td>
+            <td>
+                <a href="meals?action=edit&mealId=<c:out value="${meal.mealToId}"/>">Update</a>
+            </td>
+            <td>
+                <a href="meals?action=delete&mealId=<c:out value="${meal.mealToId}"/>">Delete</a>
+            </td>
         </tr>
     </c:forEach>
     </tbody>
 </table>
+<p style="margin: auto"><a href="meals?action=add">Add Meal</a></p>
 </body>
 </html>
