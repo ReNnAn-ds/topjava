@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class MealServlet extends HttpServlet {
 
@@ -28,13 +27,10 @@ public class MealServlet extends HttpServlet {
     private MealDao dao;
 
     public MealServlet() {
-        log.debug("MealServlet constructor call");
+        log.trace("MealServlet constructor call");
         dao = new MealDao();
     }
 
-    public static AtomicInteger getMealId() {
-        return MealDao.mealId;
-    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -44,25 +40,25 @@ public class MealServlet extends HttpServlet {
         String action = actionParam == null || actionParam.isEmpty() ? "default" : actionParam;
         switch (action.toLowerCase()) {
             case "add":
-                log.debug("add doGet");
+                log.trace("servlet {} forward to mealForm.jsp", MealServlet.class.getSimpleName());
                 forward = INSERT_OR_EDIT;
                 Meal newMeal = new Meal(0, LocalDateTime.now(), "Описание", 1000);
                 req.setAttribute("meal", newMeal);
                 break;
             case "edit":
-                log.debug("edit");
                 forward = INSERT_OR_EDIT;
                 id = Integer.parseInt(req.getParameter("mealId"));
+                log.trace("servlet {} forward to mealForm.jsp with id={}", MealServlet.class.getSimpleName(), id);
                 Meal currentMeal = dao.getById(id);
                 req.setAttribute("meal", currentMeal);
                 break;
             case "delete":
-                log.debug("delete");
                 id = Integer.parseInt(req.getParameter("mealId"));
+                log.trace("servlet {} delete meal with id={}", MealServlet.class.getSimpleName(), id);
                 dao.delete(id);
             case "default":
             default:
-                log.debug("show meals");
+                log.trace("servlet {} show meals", MealServlet.class.getSimpleName());
                 forward = LIST_USER;
                 req.setAttribute("mealsList", MealsUtil.filteredByStreams(dao.getAll(), LocalTime.MIN, LocalTime.MAX, CALORIES_PER_DAY));
         }
@@ -72,9 +68,9 @@ public class MealServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.debug("add/update doPost");
         req.setCharacterEncoding("UTF-8");
         int id = Integer.parseInt(req.getParameter("mealId"));
+        log.trace("servlet {} {} meal {}", MealServlet.class.getSimpleName(), id == 0 ? "add" : "edit", id == 0 ? "" : "with id=" + id);
         LocalDateTime dateTime = LocalDateTime.parse(req.getParameter("dateTime"));
         String description = req.getParameter("description");
         int calories = Integer.parseInt(req.getParameter("calories"));
