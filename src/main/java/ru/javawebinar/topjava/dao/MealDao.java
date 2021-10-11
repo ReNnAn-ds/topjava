@@ -5,10 +5,11 @@ import org.slf4j.LoggerFactory;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.MealsUtil;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -16,7 +17,9 @@ public class MealDao {
 
     private static final Logger log = LoggerFactory.getLogger(MealDao.class);
 
-    private ConcurrentMap<Integer, Meal> mealRepository = new ConcurrentHashMap<>();
+    public static AtomicInteger mealId = new AtomicInteger(1);
+
+    private ConcurrentMap<Integer, Meal> mealRepository;
 
     {
         log.debug("repository init with default values");
@@ -25,7 +28,10 @@ public class MealDao {
     }
 
 
-    public void add(Meal meal) {
+    public void add(int id, LocalDateTime dateTime, String description, int calories) {
+
+        Meal meal = new Meal(id == 0 ? mealId.getAndIncrement() : id, dateTime, description, calories);
+
         mealRepository.merge(meal.getMealId(), meal, (oldValue, newValue) -> newValue);
     }
 

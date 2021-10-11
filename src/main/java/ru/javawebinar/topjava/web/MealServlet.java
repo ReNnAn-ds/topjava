@@ -25,8 +25,6 @@ public class MealServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
 
-    private static AtomicInteger mealId = new AtomicInteger(1);
-
     private MealDao dao;
 
     public MealServlet() {
@@ -35,7 +33,7 @@ public class MealServlet extends HttpServlet {
     }
 
     public static AtomicInteger getMealId() {
-        return mealId;
+        return MealDao.mealId;
     }
 
     @Override
@@ -43,12 +41,12 @@ public class MealServlet extends HttpServlet {
         String forward;
         int id;
         String actionParam = req.getParameter("action");
-        String action = actionParam == null ? "default" : actionParam;
+        String action = actionParam == null || actionParam.isEmpty() ? "default" : actionParam;
         switch (action.toLowerCase()) {
             case "add":
                 log.debug("add doGet");
                 forward = INSERT_OR_EDIT;
-                Meal newMeal = new Meal(mealId.getAndIncrement(), LocalDateTime.now(), "Описание", 1000);
+                Meal newMeal = new Meal(0, LocalDateTime.now(), "Описание", 1000);
                 req.setAttribute("meal", newMeal);
                 break;
             case "edit":
@@ -81,9 +79,7 @@ public class MealServlet extends HttpServlet {
         String description = req.getParameter("description");
         int calories = Integer.parseInt(req.getParameter("calories"));
 
-        Meal meal = new Meal(id, dateTime, description, calories);
-
-        dao.add(meal);
+        dao.add(id, dateTime, description, calories);
 
         req.setAttribute("mealsList", MealsUtil.filteredByStreams(dao.getAll(), LocalTime.MIN, LocalTime.MAX, CALORIES_PER_DAY));
         req.getRequestDispatcher(LIST_USER).forward(req, resp);
