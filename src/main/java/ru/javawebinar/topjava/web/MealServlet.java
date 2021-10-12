@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.web;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.javawebinar.topjava.dao.MealDao;
+import ru.javawebinar.topjava.dao.MealDaoImpl;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.MealsUtil;
 
@@ -28,7 +29,7 @@ public class MealServlet extends HttpServlet {
 
     public MealServlet() {
         log.trace("MealServlet constructor call");
-        dao = new MealDao();
+        dao = new MealDaoImpl();
     }
 
 
