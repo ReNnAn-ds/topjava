@@ -24,12 +24,10 @@ public class MealDao {
     {
         log.trace("repository init with default values");
         mealRepository = MealsUtil.createMealsList().stream()
+                .map(meal -> new Meal(mealId.getAndIncrement(), meal.getDateTime(), meal.getDescription(), meal.getCalories()))
                 .collect(Collectors.toConcurrentMap(Meal::getMealId, Function.identity()));
     }
 
-    public static AtomicInteger getMealId() {
-        return mealId;
-    }
 
     public void add(int id, LocalDateTime dateTime, String description, int calories) {
         int validId = id == 0 ? mealId.getAndIncrement() : id;
