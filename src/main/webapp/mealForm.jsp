@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="java.time.format.DateTimeFormatter" %>
 <html>
 <head>
     <title>Add new meal</title>
@@ -23,7 +24,7 @@
 </label>
     <br>
     Date and Time: <label>
-    <input type="datetime-local" name="dateTime" value="<c:out value="${meal.dateTime}"/>">
+    <input type="datetime-local" name="dateTime" value="<c:out value="${meal.dateTime.format(DateTimeFormatter.ofPattern(\"yyyy-MM-dd'T'HH:mm\"))}"/>">
 </label>
     <br>
     Description: <label>
