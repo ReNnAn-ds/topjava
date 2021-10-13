@@ -19,23 +19,38 @@
 <br>
 <%--@elvariable id="meal" type="ru.javawebinar.topjava.model.Meal"--%>
 <form method="post" action="meals" name="frmAddMeal">
-    Meal ID: <label>
-    <input type="text" readonly="readonly" name="mealId" value="<c:out value="${meal.mealId}"/>">
-</label>
-    <br>
-    Date and Time: <label>
-    <input type="datetime-local" name="dateTime" value="<c:out value="${meal.dateTime.format(DateTimeFormatter.ofPattern(\"yyyy-MM-dd'T'HH:mm\"))}"/>">
-</label>
-    <br>
-    Description: <label>
-    <input type="text" name="description" value="<c:out value="${meal.description}"/>">
-</label>
-    <br>
-    Calories: <label>
-    <input type="text" name="calories" value="<c:out value="${meal.calories}"/>">
-</label>
-    <br>
-    <input type="submit" value="Submit">
+    <table>
+        <tbody>
+        <tr>
+            <td> ID:</td>
+            <td><label>
+                <input type="text" readonly="readonly" name="mealId" value="<c:out value="${meal.mealId}"/>">
+            </label></td>
+        </tr>
+        <tr>
+            <td> Date and Time:</td>
+            <td><label>
+                <input type="datetime-local" name="dateTime"
+                       value="<c:out value="${meal.dateTime.format(DateTimeFormatter.ofPattern(\"yyyy-MM-dd'T'HH:mm\"))}"/>">
+            </label></td>
+        </tr>
+        <tr>
+            <td>Description:</td>
+            <td><label>
+                <input type="text" name="description" value="<c:out value="${meal.description}"/>">
+            </label></td>
+        </tr>
+        <tr>
+            <td>Calories:</td>
+            <td><label>
+                <input type="text" name="calories" value="<c:out value="${meal.calories}"/>">
+            </label></td>
+        </tr>
+        <tr>
+            <td><input type="submit" value="Submit"></td>
+        </tr>
+        </tbody>
+    </table>
 </form>
 <br>
 <h2><a href="meals">Cancel</a></h2>

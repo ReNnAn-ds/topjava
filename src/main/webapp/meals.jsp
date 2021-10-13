@@ -15,8 +15,8 @@
 <body>
 <h3><a href="index.html">Home</a></h3>
 <hr>
-<h2 style="text-align: center">Meals</h2>
-<table style="margin: auto" border="1">
+<h2>Meals</h2>
+<table border="1">
     <tbody>
     <tr>
         <th>Date/Time</th>
@@ -46,6 +46,6 @@
     </c:forEach>
     </tbody>
 </table>
-<p style="margin: auto"><a href="meals?action=add">Add Meal</a></p>
+<p><a href="meals?action=add">Add Meal</a></p>
 </body>
 </html>
