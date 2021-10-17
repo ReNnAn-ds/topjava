@@ -8,6 +8,8 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
+
 @Service
 public class MealService {
 
@@ -19,15 +21,15 @@ public class MealService {
     }
 
     public Meal get(int id, int userId) {
-        return repository.get(id, userId);
+        return checkNotFoundWithId(repository.get(id, userId), id);
     }
 
     public Meal save(Meal meal, int userId) {
-        return repository.save(meal, userId);
+        return checkNotFoundWithId(repository.save(meal, userId), meal.getId());
     }
 
     public void delete(int id, int userId) {
-        repository.delete(id, userId);
+        checkNotFoundWithId(repository.delete(id, userId), id);
 
     }
 }
