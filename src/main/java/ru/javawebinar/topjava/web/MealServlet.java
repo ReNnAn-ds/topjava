@@ -4,7 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.util.StringUtils;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
@@ -13,9 +15,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
@@ -67,8 +74,28 @@ public class MealServlet extends HttpServlet {
             case "all":
             default:
                 log.info("getAll");
-                request.setAttribute("meals",
-                        MealsUtil.getTos(controller.getAll(SecurityUtil.authUserId()), SecurityUtil.authUserCaloriesPerDay()));
+                String fromDate = request.getParameter("fromDate");
+                String toDate = request.getParameter("toDate");
+                String fromTime = request.getParameter("fromTime");
+                String toTime = request.getParameter("toTime");
+
+                List<MealTo> mealTos = MealsUtil.getFilteredTos(controller.getAll(SecurityUtil.authUserId()),
+                        SecurityUtil.authUserCaloriesPerDay(),
+                        StringUtils.hasLength(fromTime) ? LocalTime.parse(fromTime) : LocalTime.MIN,
+                        StringUtils.hasLength(toTime) ? LocalTime.parse(toTime) : LocalTime.MAX);
+
+                if (StringUtils.hasLength(fromDate) || StringUtils.hasLength(toDate)){
+                    Stream<MealTo> mealToStream = mealTos.stream();
+                    if (StringUtils.hasLength(fromDate)){
+                        mealToStream = mealToStream.filter(mealTo -> mealTo.getDateTime().toLocalDate().isAfter(LocalDate.parse(fromDate)));
+                    } if (StringUtils.hasLength(toDate)){
+                        mealToStream = mealToStream.filter(mealTo -> mealTo.getDateTime().toLocalDate().isBefore(LocalDate.parse(toDate)));
+                    }
+                    mealTos = mealToStream.collect(Collectors.toList());
+                }
+
+
+                request.setAttribute("meals", mealTos);
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }

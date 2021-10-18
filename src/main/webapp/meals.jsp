@@ -23,6 +23,33 @@
     <h2>Meals</h2>
     <a href="meals?action=create">Add Meal</a>
     <br><br>
+    <form method="get" action="meals">
+        <table>
+            <thead>
+            <tr>
+                <th><label for="fromDate">От даты (включая)</label></th>
+                <th><label for="toDate">До даты (включая)</label></th>
+                <th><label for="fromTime">От времени (включая)</label></th>
+                <th><label for="toTime">До времени (исключая)</label></th>
+            </tr>
+            </thead>
+            <tr>
+                <td>
+                    <input type="date" name="fromDate" id="fromDate">
+                </td>
+                <td>
+                    <input type="date" name="toDate" id="toDate">
+                </td>
+                <td>
+                    <input type="time" name="fromTime" id="fromTime">
+                </td>
+                <td>
+                    <input type="time" name="toTime" id="toTime">
+                </td>
+            </tr>
+        </table>
+        <input type="submit" value="Отфильтровать">
+    </form>
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
         <tr>
