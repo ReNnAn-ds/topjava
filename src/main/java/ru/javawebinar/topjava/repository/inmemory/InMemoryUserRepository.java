@@ -23,10 +23,10 @@ public class InMemoryUserRepository implements UserRepository {
     private final AtomicInteger counter = new AtomicInteger(0);
 
     {
-        for (int a = 0; a < 3; a++) {
-            User user = new User(counter.incrementAndGet(), "Dmitry" + a, String.format("dmitry0%d@yandex.ru", a), "000" + a, Role.USER);
-            repository.put(user.getId(), user);
-        }
+        User userUser = new User(counter.incrementAndGet(), "Dmitry", "user@yandex.ru", "123", Role.USER);
+        repository.put(userUser.getId(), userUser);
+        User userAdmin = new User(counter.incrementAndGet(), "Mikail", "admin@yandex.ru", "321", Role.ADMIN);
+        repository.put(userAdmin.getId(), userAdmin);
     }
 
     @Override
