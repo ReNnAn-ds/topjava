@@ -11,9 +11,8 @@ import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
 
@@ -25,20 +24,23 @@ public class MealService {
 
     public List<MealTo> getFiltered(int userId, String fromDate, String toDate, String fromTime, String toTime) {
 
-        List<MealTo> mealTos = MealsUtil.getFilteredTos(repository.getAll(userId),
-                SecurityUtil.authUserCaloriesPerDay(),
-                StringUtils.hasLength(fromTime) ? LocalTime.parse(fromTime) : LocalTime.MIN,
-                StringUtils.hasLength(toTime) ? LocalTime.parse(toTime) : LocalTime.MAX);
-
+        Collection<Meal> meals;
         if (StringUtils.hasLength(fromDate) || StringUtils.hasLength(toDate)) {
-            Stream<MealTo> mealToStream = mealTos.stream();
-            if (StringUtils.hasLength(fromDate)) {
-                mealToStream = mealToStream.filter(mealTo -> mealTo.getDateTime().toLocalDate().isAfter(LocalDate.parse(fromDate)));
-            }
-            if (StringUtils.hasLength(toDate)) {
-                mealToStream = mealToStream.filter(mealTo -> mealTo.getDateTime().toLocalDate().isBefore(LocalDate.parse(toDate)));
-            }
-            mealTos = mealToStream.collect(Collectors.toList());
+            meals = repository.getFiltered(userId,
+                    StringUtils.hasLength(fromDate) ? LocalDate.parse(fromDate) : LocalDate.MIN,
+                    StringUtils.hasLength(toDate) ? LocalDate.parse(toDate) : LocalDate.MAX);
+        } else {
+            meals = repository.getAll(userId);
+        }
+
+        List<MealTo> mealTos;
+        if (StringUtils.hasLength(fromTime) || StringUtils.hasLength(toTime)) {
+            mealTos = MealsUtil.getFilteredTos(meals,
+                    SecurityUtil.authUserCaloriesPerDay(),
+                    StringUtils.hasLength(fromTime) ? LocalTime.parse(fromTime) : LocalTime.MIN,
+                    StringUtils.hasLength(toTime) ? LocalTime.parse(toTime) : LocalTime.MAX);
+        } else {
+            mealTos = MealsUtil.getTos(meals, SecurityUtil.authUserCaloriesPerDay());
         }
 
         return mealTos;

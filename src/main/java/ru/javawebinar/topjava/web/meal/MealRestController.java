@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
@@ -21,6 +22,10 @@ public class MealRestController {
 
     public List<MealTo> getFiltered(String fromDate, String toDate, String fromTime, String toTime) {
         log.info("get filtered");
+
+        if (!StringUtils.hasLength(fromDate) && !StringUtils.hasLength(toDate) && !StringUtils.hasLength(fromTime) && !StringUtils.hasLength(toTime)) {
+            return getAll();
+        }
 
         return service.getFiltered(SecurityUtil.authUserId(), fromDate, toDate, fromTime, toTime);
     }
