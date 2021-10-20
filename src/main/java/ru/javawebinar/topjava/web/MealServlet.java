@@ -21,11 +21,12 @@ public class MealServlet extends HttpServlet {
 
     private MealRestController controller;
 
+    private ConfigurableApplicationContext appCtx;
+
     @Override
     public void init() {
-        try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml")) {
-            controller = appCtx.getBean(MealRestController.class);
-        }
+        appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
+        controller = appCtx.getBean(MealRestController.class);
     }
 
     @Override
@@ -88,5 +89,13 @@ public class MealServlet extends HttpServlet {
     private int getId(HttpServletRequest request) {
         String paramId = Objects.requireNonNull(request.getParameter("id"));
         return Integer.parseInt(paramId);
+    }
+
+    @Override
+    public void destroy() {
+        log.debug("close spring context");
+        appCtx.close();
+        log.debug("super destroy");
+        super.destroy();
     }
 }
