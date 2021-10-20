@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
+import ru.javawebinar.topjava.to.MealTo;
+import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.util.List;
 
@@ -17,24 +19,30 @@ public class MealRestController {
     @Autowired
     private MealService service;
 
-    public List<Meal> getAll(int userId) {
+    public List<MealTo> getFiltered(String fromDate, String toDate, String fromTime, String toTime) {
+        log.info("get filtered");
+
+        return service.getFiltered(SecurityUtil.authUserId(), fromDate, toDate, fromTime, toTime);
+    }
+
+    public List<MealTo> getAll() {
         log.info("get all");
-        return service.getAll(userId);
+        return service.getAll(SecurityUtil.authUserId());
     }
 
-    public Meal get(int id, int userId) {
+    public Meal get(int id) {
         log.info("get meal with id={}", id);
-        return service.get(id, userId);
+        return service.get(id, SecurityUtil.authUserId());
     }
 
-    public Meal save(Meal meal, int userId) {
+    public Meal save(Meal meal) {
         log.info("save {}", meal);
-        return service.save(meal, userId);
+        return service.save(new Meal(meal.getId(), SecurityUtil.authUserId(), meal.getDateTime(), meal.getDescription(), meal.getCalories()), SecurityUtil.authUserId());
     }
 
-    public void delete(int id, int userId) {
+    public void delete(int id) {
         log.info("delete meal with id={}", id);
-        service.delete(id, userId);
+        service.delete(id, SecurityUtil.authUserId());
     }
 
 }
