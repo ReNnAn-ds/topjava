@@ -21,12 +21,12 @@ public class MealRestController {
     private MealService service;
 
     public List<MealTo> getFiltered(String fromDate, String toDate, String fromTime, String toTime) {
-        log.info("get filtered");
 
         if (!StringUtils.hasLength(fromDate) && !StringUtils.hasLength(toDate) && !StringUtils.hasLength(fromTime) && !StringUtils.hasLength(toTime)) {
+            log.info("get all");
             return getAll();
         }
-
+        log.info("get filtered");
         return service.getFiltered(SecurityUtil.authUserId(), fromDate, toDate, fromTime, toTime);
     }
 
