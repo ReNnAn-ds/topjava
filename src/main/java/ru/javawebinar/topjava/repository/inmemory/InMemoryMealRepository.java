@@ -57,7 +57,7 @@ public class InMemoryMealRepository implements MealRepository {
         return repository.values()
                 .stream()
                 .filter(meal -> meal.getUserId() == userId)
-                .sorted(Comparator.comparing(Meal::getDateTime))
+                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
     }
 
@@ -67,7 +67,7 @@ public class InMemoryMealRepository implements MealRepository {
                 .stream()
                 .filter(meal -> meal.getUserId() == userID)
                 .filter(meal -> DateTimeUtil.isBetweenDate(meal.getDate(), fromDate, toDate))
-                .sorted(Comparator.comparing(Meal::getDateTime))
+                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
     }
 }
