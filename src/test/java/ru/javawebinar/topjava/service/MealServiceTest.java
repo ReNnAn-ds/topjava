@@ -33,6 +33,11 @@ public class MealServiceTest {
     }
 
     @Test
+    public void getNotFound(){
+        assertThrows(NotFoundException.class, () -> mealService.get(NOT_FOUND_ID, LOGGED_USER_ID));
+    }
+
+    @Test
     public void getStranger(){
         assertThrows(NotFoundException.class, () -> mealService.get(STRANGER_MEAL_ID, LOGGED_USER_ID));
     }
