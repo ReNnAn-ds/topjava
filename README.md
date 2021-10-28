@@ -1,3 +1,5 @@
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/d973cdc44223404882d62419a9a948d8)](https://www.codacy.com/gh/ReNnAn-ds/topjava/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ReNnAn-ds/topjava&amp;utm_campaign=Badge_Grade)
+
 Java Enterprise Online Project
 ===============================
 
