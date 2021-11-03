@@ -1,7 +1,14 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.AfterClass;
+import org.junit.AssumptionViolatedException;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Stopwatch;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
@@ -13,6 +20,7 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -27,8 +35,48 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
 
+    private static String testResults;
+
+    private static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
+
     @Autowired
     private MealService service;
+
+    @Rule
+    public Stopwatch stopwatch = new Stopwatch() {
+        @Override
+        protected void succeeded(long nanos, Description description) {
+            testInfo(nanos, "succeeded", description);
+
+        }
+
+        @Override
+        protected void failed(long nanos, Throwable e, Description description) {
+            testInfo(nanos, "failed", description);
+        }
+
+        @Override
+        protected void skipped(long nanos, AssumptionViolatedException e, Description description) {
+            testInfo(nanos, "skipped", description);
+        }
+
+        @Override
+        protected void finished(long nanos, Description description) {
+            testInfo(nanos, "finished", description);
+        }
+    };
+
+
+    private static void testInfo(long nanos, String status, Description description) {
+        String testName = description.getMethodName();
+        log.info("Test {} {}, spent {} microseconds", testName, status, TimeUnit.NANOSECONDS.toMicros(nanos));
+        testResults += String.format("%s %s, spent %d microseconds\n", description.getDisplayName(), status, TimeUnit.NANOSECONDS.toMicros(nanos));
+    }
+
+    @AfterClass
+    public static void after() {
+        log.info(testResults);
+    }
 
     @Test
     public void delete() {
@@ -100,8 +148,8 @@ public class MealServiceTest {
     @Test
     public void getBetweenInclusive() {
         MEAL_MATCHER.assertMatch(service.getBetweenInclusive(
-                        LocalDate.of(2020, Month.JANUARY, 30),
-                        LocalDate.of(2020, Month.JANUARY, 30), USER_ID),
+                LocalDate.of(2020, Month.JANUARY, 30),
+                LocalDate.of(2020, Month.JANUARY, 30), USER_ID),
                 meal3, meal2, meal1);
     }
 
